@@ -1,6 +1,6 @@
 # boxmetrics-agent
 
-> This repo contains the boxmetrcis agent built with Go
+> This repo contains the boxmetrics agent built with Go
 
 ## 📦 Requirements
 
