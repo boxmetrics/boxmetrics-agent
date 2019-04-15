@@ -2,7 +2,9 @@ package main
 
 import (
 	"fmt"
+	"log"
 	"net/http"
+	"os"
 
 	"github.com/gorilla/websocket"
 )
@@ -37,5 +39,23 @@ func main() {
 		http.ServeFile(w, r, "web/websocket.html")
 	})
 
-	http.ListenAndServeTLS(":8080", "server.crt", "server.key", nil)
+	var httpErr error
+
+	if _, err := os.Stat("./server.crt"); err == nil {
+		fmt.Println("Server running at https://localhost:9090")
+		httpErr = http.ListenAndServeTLS(":9090", "server.crt", "server.key", nil)
+
+		if httpErr != nil {
+			log.Fatal("ListenAndServeTLS: ", err)
+		}
+	} else {
+		fmt.Println("Server running at http://localhost:8080")
+		httpErr = http.ListenAndServe(":8080", nil)
+
+		if httpErr != nil {
+			log.Fatal("ListenAndServe: ", err)
+		}
+
+	}
+
 }
