@@ -67,9 +67,9 @@ The project might be working with older version of Go, if you add vendor directo
 ├── scripts         # Scripts to perform various build, install, analysis, etc operations
 ├── test            # Additional external test apps and test data
 ├── web             # Web application specific components
-│   └── websocket.html
 ├── go.mod          # Module dependencies
 ├── go.sum          # Ensure dependencies integrity
+├── Makefile        # Helpers command
 ├── LICENSE
 └── README.md
 ```
