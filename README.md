@@ -29,14 +29,14 @@ The project might be working with older version of Go, if you add vendor directo
 
    ```bash
    # start the app
-   go run cmd/boxagent/main.go
+   make run
    ```
 
    **Prod Version**
 
    ```bash
    # build the app
-   go build ./...
+   make build
    # run executable
    ./boxagent
    ```
