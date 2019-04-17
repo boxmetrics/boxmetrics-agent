@@ -17,3 +17,8 @@
 *.srl
 *.crt
 *.csr
+
+# Mac Os file
+.DS_Store
+boxagent
+ 

@@ -1,4 +1,4 @@
-.PHONY run, test, build, cert, rootca
+#.PHONY run, test, build, cert, rootca
 
 run:
 	go run ./...
