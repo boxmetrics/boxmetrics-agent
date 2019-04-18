@@ -41,9 +41,9 @@ func main() {
 
 	var httpErr error
 
-	if _, err := os.Stat("./server.crt"); err == nil {
+	if _, err := os.Stat("./certificates/server.crt"); err == nil {
 		fmt.Println("Server running at https://localhost:9090")
-		httpErr = http.ListenAndServeTLS(":9090", "server.crt", "server.key", nil)
+		httpErr = http.ListenAndServeTLS(":9090", "certificates/server.crt", "certificates/server.key", nil)
 
 		if httpErr != nil {
 			log.Fatal("ListenAndServeTLS: ", err)
