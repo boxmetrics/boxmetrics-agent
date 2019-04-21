@@ -1,0 +1,20 @@
+  node {
+    stage('Checkout') {
+       checkout scm
+    }
+    stage('Environment') {
+      sh 'git --version'
+      echo "Branch: ${env.BRANCH_NAME}"
+      echo "Build Number: ${env.BUILD_NUMBER}"
+      sh 'docker -v'
+    }
+    stage('Build and deploy'){
+     app = docker.build("149.91.90.168:5000/boxmetrics-agent")
+    }
+    stage('Build and Deploy'){
+        withDockerRegistry( url: 'http://149.91.90.168:5000', credentialsId: '10244ec0-3d8d-4d31-9015-b7163c006da8',) {
+          app = docker.build("149.91.90.168:5000/testasopcore:${env.BUILD_NUMBER}")
+          app.push()
+        }   
+      }
+    }

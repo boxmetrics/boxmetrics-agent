@@ -38,7 +38,7 @@ The project might be working with older version of Go, if you add vendor directo
    # build the app
    make build
    # run executable
-   ./boxagent
+   ./bin/boxagent
    ```
 
 3. **Open browser and start editing files!**
@@ -50,9 +50,11 @@ The project might be working with older version of Go, if you add vendor directo
 ```text
 .
 ├── assets          # Project assets (images, logos, etc)
+├── bin             # Project binaries
 ├── build
 │   ├── package     # Package configurations and scripts (Docker, deb, rpm, pkg)
 │   └── ci          # CI configurations and scripts (travis, circle, jenkins)
+├── certificates    # Project Certificates
 ├── cmd             # Main applications for this project
 │   └── boxagent
 │       └── main.go
