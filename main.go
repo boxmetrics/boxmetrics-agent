@@ -6,6 +6,8 @@ import (
 	"net/http"
 	"os"
 
+	"github.com/boxmetrics/boxmetrics-agent/internal/pkg/boxagent"
+
 	"github.com/gorilla/websocket"
 )
 
@@ -15,6 +17,10 @@ var upgrader = websocket.Upgrader{
 }
 
 func main() {
+	boxagent.SetConfig()
+	// test config manager
+	b := boxagent.Config.IsSet("test")
+	fmt.Println(b)
 	http.HandleFunc("/ws/v1", func(w http.ResponseWriter, r *http.Request) {
 		conn, _ := upgrader.Upgrade(w, r, nil) // error ignored for sake of simplicity
 
