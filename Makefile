@@ -3,7 +3,7 @@
 
 run:
 	@echo "Starting module"
-	go run ./...
+	go run main.go
 
 test:
 	@echo "Running module test"
@@ -12,7 +12,9 @@ test:
 build:
 	@echo "Building module to ./bin"
 	mkdir bin
-	cd bin && go build -v ../...
+	cd bin
+	go build -v ../.
+	cd ..
 
 clean:
 	@echo "Cleaning workspace"

@@ -38,7 +38,7 @@ The project might be working with older version of Go, if you add vendor directo
    # build the app
    make build
    # run executable
-   ./bin/boxagent
+   ./bin/boxmetrics-agent
    ```
 
 3. **Open browser and start editing files!**
@@ -56,8 +56,6 @@ The project might be working with older version of Go, if you add vendor directo
 │   └── ci          # CI configurations and scripts (travis, circle, jenkins)
 ├── certificates    # Project Certificates
 ├── cmd             # Main applications for this project
-│   └── boxagent
-│       └── main.go
 ├── configs         # Configuration file templates or default configs
 ├── deployments     # Deployment configurations and templates (docker-compose, kubernetes/helm)
 ├── docs            # Design and user documents
@@ -71,6 +69,7 @@ The project might be working with older version of Go, if you add vendor directo
 ├── web             # Web application specific components
 ├── go.mod          # Module dependencies
 ├── go.sum          # Ensure dependencies integrity
+├── main.go         # Application entry point
 ├── Makefile        # Helpers command
 ├── LICENSE
 └── README.md
