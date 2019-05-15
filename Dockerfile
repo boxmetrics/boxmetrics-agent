@@ -6,4 +6,4 @@ WORKDIR /app
 COPY . .
 RUN make build
 EXPOSE 8080 9090
-CMD ["./bin/boxagent"]
+CMD ["./bin/boxmetrics-agent"]
