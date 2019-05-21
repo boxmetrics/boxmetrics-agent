@@ -1,14 +1,14 @@
 package main
 
 import (
-	"fmt"
-	"log"
 	"net/http"
 	"os"
+	"strconv"
+	"strings"
 
 	"github.com/boxmetrics/boxmetrics-agent/internal/pkg/boxagent"
-
 	"github.com/gorilla/websocket"
+	"github.com/sirupsen/logrus"
 )
 
 var upgrader = websocket.Upgrader{
@@ -17,12 +17,14 @@ var upgrader = websocket.Upgrader{
 }
 
 func main() {
-	boxagent.SetConfig()
-	// test config manager
-	b := boxagent.Config.IsSet("test")
-	fmt.Println(b)
+	boxagent.InitConfig()
+
 	http.HandleFunc("/ws/v1", func(w http.ResponseWriter, r *http.Request) {
-		conn, _ := upgrader.Upgrade(w, r, nil) // error ignored for sake of simplicity
+		conn, err := upgrader.Upgrade(w, r, nil) // error ignored for sake of simplicity
+
+		if err != nil {
+			boxagent.Log.WithField("error", err).Error("websocket error")
+		}
 
 		for {
 			// Read message from browser
@@ -31,8 +33,10 @@ func main() {
 				return
 			}
 
-			// Print the message to the console
-			fmt.Printf("%s sent: %s\n", conn.RemoteAddr(), string(msg))
+			// Log message
+
+			logfields := logrus.Fields{"remote": conn.RemoteAddr(), "text": string(msg)}
+			boxagent.Log.WithFields(logfields).Info("receive")
 
 			// Write message back to browser
 			if err = conn.WriteMessage(msgType, msg); err != nil {
@@ -46,22 +50,32 @@ func main() {
 	})
 
 	var httpErr error
+	protocol := boxagent.Config.GetString("protocol")
+	host := boxagent.Config.GetString("host")
+	port := boxagent.Config.GetInt(strings.Join([]string{protocol, "_port"}, ""))
+	addr := strings.Join([]string{host, ":", strconv.Itoa(port)}, "")
+	url := strings.Join([]string{protocol, "://", addr}, "")
 
-	if _, err := os.Stat("./certificates/server.crt"); err == nil {
-		fmt.Println("Server running at https://localhost:9090")
-		httpErr = http.ListenAndServeTLS(":9090", "certificates/server.crt", "certificates/server.key", nil)
+	logfields := logrus.Fields{"host": host, "port": port, "url": url}
+	boxagent.Log.WithFields(logfields).Info("server started")
 
-		if httpErr != nil {
-			log.Fatal("ListenAndServeTLS: ", err)
+	if protocol == "https" {
+		crt := boxagent.Config.GetString("ssl_crt")
+		key := boxagent.Config.GetString("ssl_key")
+		if _, err := os.Stat(crt); err != nil {
+			boxagent.Log.WithField("error", err).Fatal("could not find certificate file")
 		}
+		if _, err := os.Stat(key); err != nil {
+			boxagent.Log.WithField("error", err).Fatal("could not find key file")
+		}
+		httpErr = http.ListenAndServeTLS(addr, crt, key, nil)
+
 	} else {
-		fmt.Println("Server running at http://localhost:8080")
-		httpErr = http.ListenAndServe(":8080", nil)
+		httpErr = http.ListenAndServe(addr, nil)
+	}
 
-		if httpErr != nil {
-			log.Fatal("ListenAndServe: ", err)
-		}
-
+	if httpErr != nil {
+		boxagent.Log.WithField("error", httpErr).Fatal("listener fatal error")
 	}
 
 }

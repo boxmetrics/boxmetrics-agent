@@ -1,0 +1,10 @@
+---
+loggers:
+  - type: console
+    format: text
+    level: debug
+  - type: file
+    path: "./boxagent.log"
+    format: json
+    level: trace
+protocol: http
