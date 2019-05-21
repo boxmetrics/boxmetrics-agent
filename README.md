@@ -4,6 +4,8 @@
 
 ## 📦 Requirements
 
+> Only if you want to run the source code
+
 This project should be working as expected with the following minimal version of:
 
 | Dependency | Version  |
