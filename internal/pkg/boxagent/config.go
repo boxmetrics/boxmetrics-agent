@@ -1,8 +1,6 @@
 package boxagent
 
 import (
-	"fmt"
-
 	"github.com/fsnotify/fsnotify"
 	"github.com/spf13/viper"
 )
@@ -10,8 +8,8 @@ import (
 // Config is the global configuration varaible
 var Config = viper.New()
 
-// SetConfig set configuration
-func SetConfig() {
+// InitConfig set configuration
+func InitConfig() {
 	Config.SetConfigName("boxagent")
 	Config.SetEnvPrefix("boxagent")
 	Config.AutomaticEnv()
