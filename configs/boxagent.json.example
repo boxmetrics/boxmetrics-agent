@@ -1,3 +1,16 @@
 {
-  "test": "toto"
+  "loggers": [
+    {
+      "type": "console",
+      "format": "text",
+      "level": "info"
+    },
+    {
+      "type": "file",
+      "path": "./boxagent.log",
+      "format": "json",
+      "level": "trace"
+    }
+  ],
+  "http_port": 8090
 }
