@@ -53,9 +53,6 @@ The project might be working with older version of Go, if you add vendor directo
 .
 ├── assets          # Project assets (images, logos, etc)
 ├── bin             # Project binaries
-├── build
-│   ├── package     # Package configurations and scripts (Docker, deb, rpm, pkg)
-│   └── ci          # CI configurations and scripts (travis, circle, jenkins)
 ├── certificates    # Project Certificates
 ├── cmd             # Main applications for this project
 ├── configs         # Configuration file templates or default configs
@@ -71,6 +68,7 @@ The project might be working with older version of Go, if you add vendor directo
 ├── web             # Web application specific components
 ├── go.mod          # Module dependencies
 ├── go.sum          # Ensure dependencies integrity
+├── JenkinsFile     # Jenkins pipeline
 ├── main.go         # Application entry point
 ├── Makefile        # Helpers command
 ├── LICENSE
