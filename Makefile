@@ -11,10 +11,8 @@ test:
 
 build:
 	@echo "Building module to ./bin"
-	mkdir bin
-	cd bin
-	go build -v ../.
-	cd ..
+	mkdir -p bin
+	cd bin && go build -v ../.
 
 clean:
 	@echo "Cleaning workspace"
