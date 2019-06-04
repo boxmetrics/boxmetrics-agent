@@ -13,6 +13,7 @@ build:
 	@echo "Building module to ./bin"
 	mkdir -p bin
 	cd bin && go build -v ../.
+	
 
 clean:
 	@echo "Cleaning workspace"
