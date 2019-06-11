@@ -2,7 +2,7 @@ pipeline {
  agent any
 
  stages {
-  stage('Build') {
+  stage('Checkout') {
    steps {
     echo 'Checkout..'
     checkout scm
@@ -17,14 +17,20 @@ pipeline {
     sh 'docker ps'
    }
   }
+  stage('Build') {
+   steps {
+    sh "docker build -t boxmetrics-agent ."
+   }
+  }
   stage('Deploy') {
+    when { anyOf { branch 'master'; branch 'develop'; branch 'ci-cd' } }
    steps {
     echo 'Build and push'
     withCredentials([string(credentialsId: 'SERVER', variable: 'SERVER')]) {
      withDockerRegistry(credentialsId: 'ecr:us-west-2:aws-cred', url: 'https://${SERVER}') {
-        sh "docker build -t boxmetrics-agent ."
-       sh "docker tag boxmetrics-agent ${SERVER}:${env.BRANCH_NAME}-build-${env.BUILD_NUMBER}"
-       sh "docker push ${SERVER}:${env.BRANCH_NAME}-build-${env.BUILD_NUMBER}"
+      
+      sh "docker tag boxmetrics-agent ${SERVER}:${env.BRANCH_NAME}-build-${env.BUILD_NUMBER}"
+      sh "docker push ${SERVER}:${env.BRANCH_NAME}-build-${env.BUILD_NUMBER}"
      }
     }
    }
