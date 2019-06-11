@@ -10,10 +10,10 @@ node {
  }
  stage('Build and Push') {
   withCredentials([string(credentialsId: 'SERVER', variable: 'SERVER')]) {
-   withDockerRegistry(url: 'http://${SERVER}', credentialsId: 'e56a6c40-97c8-4a3c-afbb-ff7182917c31', ) {
-    app = docker.build("${SERVER}/boxmetrics-agent:${env.BRANCH_NAME}-build-${env.BUILD_NUMBER}")
+    withDockerRegistry(credentialsId: 'ecr:us-west-2:aws-cred', url: 'https://${SERVER}') {
+    app = docker.build("${SERVER}:${env.BRANCH_NAME}-build-${env.BUILD_NUMBER}")
     app.push()
-   }
+    }
   }
- }
+}
 }
