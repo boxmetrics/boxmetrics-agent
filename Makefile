@@ -1,4 +1,3 @@
-
 .PHONY: run test build clean cert rootca
 
 run:
@@ -7,13 +6,12 @@ run:
 
 test:
 	@echo "Running module test"
-	go test ./...
+	go test -v ./...
 
 build:
 	@echo "Building module to ./bin"
 	mkdir -p bin
 	cd bin && go build -v ../.
-	
 
 clean:
 	@echo "Cleaning workspace"
@@ -39,4 +37,3 @@ rootca:
 	@echo "For Windows users :"
 	@echo "Follow this tutorial https://www.thewindowsclub.com/manage-trusted-root-certificates-windows"
 	@echo "=)"
-

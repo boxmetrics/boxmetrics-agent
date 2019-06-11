@@ -4,6 +4,7 @@ RUN apt install -y make
 RUN mkdir /app 
 WORKDIR /app 
 COPY . .
+RUN make test
 RUN make build
 EXPOSE 8080 9090
 CMD ["./bin/boxmetrics-agent"]
