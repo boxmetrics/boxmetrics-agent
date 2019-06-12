@@ -1,20 +1,39 @@
-node {
-stage('Checkout') {
-  checkout scm
- }
- stage('Environment') {
-   sh 'git --version'
-   echo "Build number : env.BUILD_NUMBER"
-   sh 'docker -v'
-   sh 'docker ps'
- }
- stage('Build and Push') {  
-   withDockerRegistry(url: 'http://149.91.90.168:5000', credentialsId: 'e56a6c40-97c8-4a3c-afbb-ff7182917c31', ) {
-    app = docker.build("registry.labo-devops.ml/boxmetrics-agent:${env.BUILD_NUMBER}")
-    app.push()
+pipeline {
+  agent any
+
+  stages {
+    stage('Checkout') {
+      steps {
+        echo 'Checkout..'
+        checkout scm
+      }
+    }
+    stage('Environement') {
+      steps {
+        echo 'Env..'
+        sh 'git --version'
+        echo "Build number : env.BUILD_NUMBER"
+        sh 'docker -v'
+        sh 'docker ps'
+      }
+    }
+    stage('Test & Build') {
+      steps {
+        sh "docker build -t boxmetrics-agent ."
+      }
+    }
+    stage('Deploy') {
+      when { anyOf { branch 'master'; branch 'develop'; branch 'ci-cd' } }
+      steps {
+        echo 'Build and push'
+        withCredentials([string(credentialsId: 'SERVER', variable: 'SERVER')]) {
+          withDockerRegistry(credentialsId: 'ecr:us-west-2:aws-cred', url: 'https://${SERVER}') {
+          
+            sh "docker tag boxmetrics-agent ${SERVER}:${env.BRANCH_NAME}-build-${env.BUILD_NUMBER}"
+            sh "docker push ${SERVER}:${env.BRANCH_NAME}-build-${env.BUILD_NUMBER}"
+          }
+        }
+      }
+    }
   }
- }
 }
-
-
-    
