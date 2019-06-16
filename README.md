@@ -45,7 +45,7 @@ The project might be working with older version of Go, if you add vendor directo
 
 3. **Open browser and start editing files!**
 
-> Project is running at <http://localhost:8080> or <https://localhost:9090>
+> Project is running at <http://localhost:4455> or <https://localhost:5544>
 
 ## 🧐 What's inside ?
 
