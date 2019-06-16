@@ -1,11 +1,11 @@
-package boxagent
+package agent
 
 import (
-	"io"
-	"os"
-	"fmt"
-	"log"
 	"errors"
+	"fmt"
+	"io"
+	"log"
+	"os"
 
 	"github.com/sirupsen/logrus"
 )

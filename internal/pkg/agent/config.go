@@ -1,4 +1,4 @@
-package boxagent
+package agent
 
 import (
 	"github.com/fsnotify/fsnotify"
@@ -37,10 +37,11 @@ func InitConfig() {
 func setDefault() {
 	consoleLog := Logger{Type: "console", Format: "text", Level: "debug"}
 	Config.SetDefault("loggers", []Logger{consoleLog})
-	Config.SetDefault("protocol", "https")
+	Config.SetDefault("protocol", "http")
 	Config.SetDefault("host", "localhost")
-	Config.SetDefault("http_port", 8080)
-	Config.SetDefault("https_port", 9090)
+	Config.SetDefault("http_port", 4455)
+	Config.SetDefault("https_port", 5544)
 	Config.SetDefault("ssl_crt", "certificates/server.crt")
 	Config.SetDefault("ssl_key", "certificates/server.key")
+	Config.SetDefault("jwt_auth", false)
 }
