@@ -1,4 +1,4 @@
-.PHONY: run test build clean cert rootca
+.PHONY: run test coverage build clean cert rootca
 
 run:
 	@echo "Starting module"
@@ -7,6 +7,15 @@ run:
 test:
 	@echo "Running module test"
 	go test -v ./...
+
+coverage:
+	@echo "Running coverage"
+	go test -v -cover ./...
+
+coverage-html:
+	@echo "Running coverage html"
+	go test -cover -coverprofile=c.out ./...
+	go tool cover -html=c.out -o coverage.html
 
 build:
 	@echo "Building module to ./bin"

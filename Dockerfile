@@ -6,5 +6,5 @@ WORKDIR /app
 COPY . .
 RUN make test
 RUN make build
-EXPOSE 8080 9090
+EXPOSE 4455 5544
 CMD ["./bin/boxmetrics-agent"]
