@@ -4,7 +4,7 @@
 
 ## 📦 Requirements
 
-> Not needed if you run from a prebuilt binary
+> Only needed when contributing or building from source
 
 This project should be working as expected with the following minimal version of:
 
@@ -13,6 +13,14 @@ This project should be working as expected with the following minimal version of
 | Go         | >= v1.12 |
 
 ## 🚀 Quick start
+
+### _From docker image :_
+
+1. **Run this command**
+
+```bash
+docker run --rm -p 4455:4455 -p 5544:5544 286829485023.dkr.ecr.us-west-2.amazonaws.com/boxmetrics-agent:<TAG>
+```
 
 ### _From prebuilt binaries :_
 
