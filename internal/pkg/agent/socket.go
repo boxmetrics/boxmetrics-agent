@@ -155,8 +155,7 @@ func newResponse(e event) *response {
 	return &res
 }
 
-// CreateServer create websocket server
-func CreateServer() {
+func addHandler() {
 	http.HandleFunc("/ws/v1", func(w http.ResponseWriter, r *http.Request) {
 		conn, err := upgrader.Upgrade(w, r, nil) // error ignored for sake of simplicity
 
@@ -213,6 +212,12 @@ func CreateServer() {
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		http.ServeFile(w, r, "web/websocket.html")
 	})
+}
+
+// CreateServer create websocket server
+func CreateServer() {
+
+	addHandler()
 
 	var httpErr error
 	protocol := Config.GetString("protocol")
