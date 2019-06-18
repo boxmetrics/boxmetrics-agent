@@ -1,4 +1,4 @@
-.PHONY: run test coverage build clean cert rootca
+.PHONY: run test coverage coverage-html build clean cert rootca
 
 run:
 	@echo "Starting module"
