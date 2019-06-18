@@ -5,10 +5,8 @@
 <script>
   var input = document.getElementById("input");
   var output = document.getElementById("output");
-  var socket =
-    window.location.port === "5544"
-      ? new WebSocket("wss://localhost:5544/ws/v1")
-      : new WebSocket("ws://localhost:4455/ws/v1");
+  var protocol = window.location.port === "5544" ? "wss" : "ws";
+  var socket = new WebSocket(`${protocol}://${window.location.host}/ws/v1`);
 
   socket.onclose = function(ev) {
     output.innerHTML += "Close: " + ev.code + "\n";

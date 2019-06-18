@@ -223,8 +223,8 @@ func CreateServer() {
 	protocol := Config.GetString("protocol")
 	host := Config.GetString("host")
 	port := Config.GetInt(strings.Join([]string{protocol, "_port"}, ""))
-	addr := strings.Join([]string{host, ":", strconv.Itoa(port)}, "")
-	url := strings.Join([]string{protocol, "://", addr}, "")
+	addr := strings.Join([]string{":", strconv.Itoa(port)}, "")
+	url := strings.Join([]string{protocol, "://", host, addr}, "")
 
 	logfields := logrus.Fields{"host": host, "port": port, "url": url}
 	Log.WithFields(logfields).Info("server started")
