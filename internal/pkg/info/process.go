@@ -97,7 +97,7 @@ func (p ProcessStat) Text() ProcessStatFormat {
 	numFds := p.NumFDS.Text()
 	openFile := p.OpenFiles
 	numThread := p.NumThreads.Text()
-	var threads map[string]cpuTimesFormat
+	threads := make(map[string]cpuTimesFormat)
 	for key, th := range p.Threads {
 		threads[key.Text()] = th.Text()
 	}
@@ -139,7 +139,7 @@ func (p ProcessStat) Format() ProcessStatFormat {
 	numFds := p.NumFDS.Format()
 	openFile := p.OpenFiles
 	numThread := p.NumThreads.Format()
-	var threads map[string]cpuTimesFormat
+	threads := make(map[string]cpuTimesFormat)
 	for key, th := range p.Threads {
 		threads[key.Format()] = th.Format()
 	}
@@ -204,7 +204,7 @@ func newProcessStat(p *process.Process) ProcessStat {
 	numThreadsRaw, _ := p.NumThreads()
 	numThreads := number(numThreadsRaw)
 	threadsRaw, _ := p.Threads()
-	var threads map[number]cpuTimes
+	threads := make(map[number]cpuTimes)
 	for key, th := range threadsRaw {
 		threads[number(key)] = newCPUTimes(th)
 	}
