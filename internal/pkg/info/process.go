@@ -470,34 +470,38 @@ func newProcessLimit(p *process.RlimitStat) processLimit {
 
 // ProcessLightStat def
 type ProcessLightStat struct {
-	Pid        number      `json:"pid"`
-	Name       string      `json:"name"`
-	Username   string      `json:"username"`
-	Status     string      `json:"status"`
-	Uids       numberSlice `json:"uids"`
-	Gids       numberSlice `json:"gids"`
-	Terminal   string      `json:"terminal"`
-	Cwd        string      `json:"cwd"`
-	Exe        string      `json:"exe"`
-	CmdArgs    []string    `json:"cmdArgs"`
-	Ppid       number      `json:"ppid"`
-	CreateTime systemtime  `json:"createTime"`
+	Pid        number         `json:"pid"`
+	Name       string         `json:"name"`
+	Username   string         `json:"username"`
+	Status     string         `json:"status"`
+	Uids       numberSlice    `json:"uids"`
+	Gids       numberSlice    `json:"gids"`
+	Terminal   string         `json:"terminal"`
+	Cwd        string         `json:"cwd"`
+	Exe        string         `json:"exe"`
+	CmdArgs    []string       `json:"cmdArgs"`
+	Ppid       number         `json:"ppid"`
+	CPU        processCPUInfo `json:"cpu"`
+	Memory     processMemInfo `json:"memory"`
+	CreateTime systemtime     `json:"createTime"`
 }
 
 // ProcessLightStatFormat def
 type ProcessLightStatFormat struct {
-	Pid        string   `json:"pid"`
-	Name       string   `json:"name"`
-	Username   string   `json:"username"`
-	Status     string   `json:"status"`
-	Uids       []string `json:"uids"`
-	Gids       []string `json:"gids"`
-	Terminal   string   `json:"terminal"`
-	Cwd        string   `json:"cwd"`
-	Exe        string   `json:"exe"`
-	CmdArgs    []string `json:"cmdArgs"`
-	Ppid       string   `json:"ppid"`
-	CreateTime string   `json:"createTime"`
+	Pid        string               `json:"pid"`
+	Name       string               `json:"name"`
+	Username   string               `json:"username"`
+	Status     string               `json:"status"`
+	Uids       []string             `json:"uids"`
+	Gids       []string             `json:"gids"`
+	Terminal   string               `json:"terminal"`
+	Cwd        string               `json:"cwd"`
+	Exe        string               `json:"exe"`
+	CmdArgs    []string             `json:"cmdArgs"`
+	Ppid       string               `json:"ppid"`
+	CPU        processCPUInfoFormat `json:"cpu"`
+	Memory     processMemInfoFormat `json:"memory"`
+	CreateTime string               `json:"createTime"`
 }
 
 // Text conversion
@@ -513,9 +517,11 @@ func (p ProcessLightStat) Text() ProcessLightStatFormat {
 	exe := p.Exe
 	cmdArgs := p.CmdArgs
 	ppid := p.Pid.Text()
+	cpu := p.CPU.Text()
+	mem := p.Memory.Text()
 	createTime := p.CreateTime.Text()
 
-	return ProcessLightStatFormat{pid, name, username, status, uids, gids, terminal, cwd, exe, cmdArgs, ppid, createTime}
+	return ProcessLightStatFormat{pid, name, username, status, uids, gids, terminal, cwd, exe, cmdArgs, ppid, cpu, mem, createTime}
 }
 
 // Format return
@@ -531,9 +537,11 @@ func (p ProcessLightStat) Format() ProcessLightStatFormat {
 	exe := p.Exe
 	cmdArgs := p.CmdArgs
 	ppid := p.Pid.Format()
+	cpu := p.CPU.Format()
+	mem := p.Memory.Format()
 	createTime := p.CreateTime.Format()
 
-	return ProcessLightStatFormat{pid, name, username, status, uids, gids, terminal, cwd, exe, cmdArgs, ppid, createTime}
+	return ProcessLightStatFormat{pid, name, username, status, uids, gids, terminal, cwd, exe, cmdArgs, ppid, cpu, mem, createTime}
 }
 
 func newProcessLightStat(p *process.Process) ProcessLightStat {
@@ -555,10 +563,18 @@ func newProcessLightStat(p *process.Process) ProcessLightStat {
 	cmdArgs, _ := p.CmdlineSlice()
 	ppidRaw, _ := p.Ppid()
 	ppid := number(ppidRaw)
+	cpuPer, _ := p.CPUPercent()
+	cpuTimeRaw, _ := p.Times()
+	cpuTime := newCPUTimes(cpuTimeRaw)
+	cpu := newProcessCPUInfo(cpuPer, cpuTime)
+	memPer, _ := p.MemoryPercent()
+	memInfoRaw, _ := p.MemoryInfo()
+	memInfo := newProcessMemUsage(memInfoRaw)
+	mem := newProcessMemInfo(memPer, memInfo)
 	ctime, _ := p.CreateTime()
 	createTime := systemtime(ctime / 1000)
 
-	return ProcessLightStat{pid, name, username, status, uids, gids, terminal, cwd, exe, cmdArgs, ppid, createTime}
+	return ProcessLightStat{pid, name, username, status, uids, gids, terminal, cwd, exe, cmdArgs, ppid, cpu, mem, createTime}
 }
 
 // Processes return all processes informations
