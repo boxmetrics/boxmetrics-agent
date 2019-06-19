@@ -86,17 +86,19 @@
 
 ## Process Light
 
-| Key        | Type   | Description                       |
-| ---------- | ------ | --------------------------------- |
-| pid        | string | Process PID                       |
-| name       | string | Process name                      |
-| username   | string | Process user name                 |
-| status     | string | Process status                    |
-| uids       | Array  | Process UIDs                      |
-| gids       | Array  | Process GIDs                      |
-| terminal   | string | Process associated terminal       |
-| cwd        | string | Process current working directory |
-| exe        | string | Process executable path           |
-| cmdArgs    | Array  | Process command line arguments    |
-| ppid       | string | Process parent PID                |
-| createTime | string | Process create time               |
+| Key        | Type   | Description                                  |
+| ---------- | ------ | -------------------------------------------- |
+| pid        | string | Process PID                                  |
+| name       | string | Process name                                 |
+| username   | string | Process user name                            |
+| status     | string | Process status                               |
+| uids       | Array  | Process UIDs                                 |
+| gids       | Array  | Process GIDs                                 |
+| terminal   | string | Process associated terminal                  |
+| cwd        | string | Process current working directory            |
+| exe        | string | Process executable path                      |
+| cmdArgs    | Array  | Process command line arguments               |
+| ppid       | string | Process parent PID                           |
+| cpu        | object | [Process cpu usage](#process-cpu-info)       |
+| memory     | object | [Process memory usage](#process-memory-info) |
+| createTime | string | Process create time                          |
