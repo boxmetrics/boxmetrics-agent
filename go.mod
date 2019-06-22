@@ -8,8 +8,10 @@ require (
 	github.com/go-ole/go-ole v1.2.4 // indirect
 	github.com/google/go-cmp v0.3.0
 	github.com/gorilla/websocket v1.4.0
+	github.com/mitchellh/go-homedir v1.1.0
 	github.com/shirou/gopsutil v2.18.12+incompatible
 	github.com/shirou/w32 v0.0.0-20160930032740-bb4de0191aa4 // indirect
 	github.com/sirupsen/logrus v1.4.2
+	github.com/spf13/cobra v0.0.5
 	github.com/spf13/viper v1.4.0
 )
