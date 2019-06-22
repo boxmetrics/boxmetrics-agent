@@ -8,9 +8,9 @@
 
 This project should be working as expected with the following minimal version of:
 
-| Dependency | Version  |
-| ---------- | -------- |
-| Go         | >= v1.12 |
+| Dependency | Version |
+| ---------- | ------- |
+| Go         | >= 1.12 |
 
 ## 🚀 Quick start
 
@@ -61,7 +61,7 @@ make build
 sudo chmod +x bin/boxmetrics-agent
 
 # Start application
-./bin/boxmetrics-agent
+./bin/boxmetrics-agent start
 ```
 
 ## 💡 Usage
@@ -158,7 +158,8 @@ No script available yet
 # run test
 make test
 # start application in dev mode
-make run
+make run #  only on first time
+go run main.go
 ```
 
 5. **Open browser to test your change!**

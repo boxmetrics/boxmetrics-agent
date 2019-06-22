@@ -2,6 +2,8 @@
 
 run:
 	@echo "Starting module"
+	mkdir -p bin
+	cd bin && go build -v ../internal/app/server.go
 	go run main.go
 
 test:
@@ -20,7 +22,7 @@ coverage-html:
 build:
 	@echo "Building module to ./bin"
 	mkdir -p bin
-	cd bin && go build -v ../.
+	cd bin && go build -v ../. && go build -v ../internal/app/server.go
 
 clean:
 	@echo "Cleaning workspace"
