@@ -21,4 +21,9 @@ coverage.html
 
 # Mac Os file
 .DS_Store
- 
+
+# Binary folder
+bin/
+
+# Log file
+.log
