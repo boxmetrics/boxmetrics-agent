@@ -63,12 +63,12 @@ func (ds ContainerStatFormat) String() string {
 
 type containerCPUStat struct {
 	Percent percent  `json:"percent"`
-	Times       cpuTimes `json:"times"`
+	Times   cpuTimes `json:"times"`
 }
 
 type containerCPUStatFormat struct {
 	Percent string         `json:"percent"`
-	Times       cpuTimesFormat `json:"times"`
+	Times   cpuTimesFormat `json:"times"`
 }
 
 func (c containerCPUStat) Text() containerCPUStatFormat {
@@ -106,7 +106,7 @@ type containerMemStat struct {
 	ActiveAnon              number `json:"activeAnon"`
 	InactiveFile            number `json:"inactiveFile"`
 	ActiveFile              number `json:"activeFile"`
-	Unevictable             byte `json:"unevictable"`
+	Unevictable             byte   `json:"unevictable"`
 	HierarchicalMemoryLimit byte   `json:"hierarchicalMemoryLimit"`
 	TotalCache              byte   `json:"totalCache"`
 	TotalRSS                number `json:"totalRss"`

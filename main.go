@@ -1,11 +1,9 @@
 package main
 
 import (
-	"github.com/boxmetrics/boxmetrics-agent/internal/pkg/agent"
+	"github.com/boxmetrics/boxmetrics-agent/cmd"
 )
 
 func main() {
-	agent.InitConfig()
-
-	agent.CreateServer()
+	cmd.Execute()
 }
