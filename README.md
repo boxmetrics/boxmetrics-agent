@@ -114,16 +114,19 @@ Both request and response are JSON message
 
 ##### Script Type Values
 
-No script available yet
+| Value       | Response | Description                                                                    |
+| ----------- | -------- | ------------------------------------------------------------------------------ |
+| adduser     | string   | Add user to the system _(`options.args` must be set with corresponding value)_ |
+| killprocess | string   | Kill one process _(`options.pid` must be set)_                                 |
 
 ##### Options Object
 
-| Key  | Type   | Require | Default | Description                                                                    |
-| ---- | ------ | ------- | ------- | ------------------------------------------------------------------------------ |
-| args | Array  | no      | null    | Array of arguments to pass to the command                                      |
-| env  | Array  | no      | null    | Array of environment variable to add before executing command _eg. MY_VAR=abc_ |
-| pwd  | string | no      | ""      | Location where the command run, if empty string run in the cwd of the process  |
-| pid  | number | no      | 0       | PID use to retrieve information with `process` info type                       |
+| Key  | Type   | Require | Default | Description                                                                                                                                                                        |
+| ---- | ------ | ------- | ------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| args | Array  | no      | null    | Array of arguments to pass to the command or to pass to `adduser` script _eg. `["-p <pass>", "-u <username>", "-g group1"]` (`-g` arg is optional and can be used multiple times)_ |
+| env  | Array  | no      | null    | Array of environment variable to add before executing command _eg. MY_VAR=abc_                                                                                                     |
+| pwd  | string | no      | ""      | Location where the command run, if empty string run in the cwd of the process                                                                                                      |
+| pid  | number | no      | 0       | PID use to retrieve information with `process` info type or to kill on script `killprocess`                                                                                        |
 
 #### Response
 
