@@ -14,6 +14,8 @@ This project should be working as expected with the following minimal version of
 
 ## 🚀 Quick start
 
+> The application must be launch with root or a sudoers, otherwise some features can be unavailable
+
 ### _From docker image :_
 
 1. **Run this command**
