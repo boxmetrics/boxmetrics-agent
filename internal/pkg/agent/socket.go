@@ -76,7 +76,7 @@ type options struct {
 	Args []string `json:"args"`
 	Env  []string `json:"env"`
 	Dir  string   `json:"pwd"`
-	Pid  int32    `json:"pid"`
+	Pid  int      `json:"pid"`
 }
 
 type event struct {

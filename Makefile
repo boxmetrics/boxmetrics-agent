@@ -1,9 +1,13 @@
-.PHONY: run test coverage coverage-html build clean cert rootca
+.PHONY: run test coverage coverage-html prebuild build clean cert rootca
+
+prebuild:
+	@echo "Building dependencies"
+	mkdir -p bin
+	cd bin && go build -v ../internal/app/server.go
 
 run:
 	@echo "Starting module"
-	mkdir -p bin
-	cd bin && go build -v ../internal/app/server.go
+	make prebuild
 	go run main.go
 
 test:
@@ -21,8 +25,8 @@ coverage-html:
 
 build:
 	@echo "Building module to ./bin"
-	mkdir -p bin
-	cd bin && go build -v ../. && go build -v ../internal/app/server.go
+	make prebuild
+	cd bin && go build -v ../.
 
 clean:
 	@echo "Cleaning workspace"

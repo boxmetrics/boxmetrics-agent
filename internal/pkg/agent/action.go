@@ -1,10 +1,11 @@
 package agent
 
 import (
-	"os/exec"
-
 	"github.com/boxmetrics/boxmetrics-agent/internal/pkg/errors"
 	"github.com/boxmetrics/boxmetrics-agent/internal/pkg/info"
+	"os"
+	"os/exec"
+	"strconv"
 )
 
 func dispatchEvent(e event) (interface{}, error) {
@@ -57,7 +58,7 @@ func dispatchInfo(e event) (interface{}, error) {
 		return info.Processes(e.Format)
 	case "process":
 		Log.Debug("process")
-		return info.Process(e.Options.Pid, e.Format)
+		return info.Process(int32(e.Options.Pid), e.Format)
 	case "general":
 		Log.Debug("general")
 		return info.General(e.Format)
@@ -68,8 +69,30 @@ func dispatchInfo(e event) (interface{}, error) {
 
 func dispatchScript(e event) (interface{}, error) {
 	switch e.Value {
-	case "user":
-		return "launch user creation script", nil
+	case "adduser":
+		cmd := exec.Command("sudo", "scripts/add_user.sh")
+		cmd.Args = append(cmd.Args, e.Options.Args...)
+
+		r, err := cmd.Output()
+
+		if err != nil {
+			return nil, errors.Convert(err)
+		}
+
+		return string(r), nil
+	case "killprocess":
+		pid := e.Options.Pid
+		proc, err := os.FindProcess(pid)
+		if err != nil {
+			return nil, errors.Convert(err)
+		}
+
+		err = proc.Kill()
+		if err != nil {
+			return nil, errors.Convert(err)
+		}
+
+		return "Process " + strconv.Itoa(pid) + " has stopped", nil
 	default:
 		return nil, errors.New("Script not support")
 	}
