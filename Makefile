@@ -4,6 +4,7 @@ prebuild:
 	@echo "Building dependencies"
 	mkdir -p bin
 	cd bin && go build -v ../internal/app/server.go
+	chmod +x scripts/*.sh
 
 run:
 	@echo "Starting module"
