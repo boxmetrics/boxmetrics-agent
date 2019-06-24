@@ -25,11 +25,21 @@
 | sensorKey   | string | Sensor identifier  |
 | temperature | string | Sensor temperature |
 
-## Users
+## User
+
+| Key      | Type   | Description                 |
+| -------- | ------ | --------------------------- |
+| uid      | string | User id                     |
+| gid      | string | Primary group id            |
+| username | string | Login name                  |
+| name     | string | User's real or display name |
+| homeDir  | string | User's home directory       |
+
+## Session
 
 | Key      | Type   | Description               |
 | -------- | ------ | ------------------------- |
 | user     | string | User name                 |
 | terminal | string | User default terminal     |
-| host     | string | User host                 |
+| host     | string | Session host              |
 | started  | int    | Number of session started |
