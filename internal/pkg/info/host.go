@@ -168,8 +168,8 @@ func Host(format bool) (HostStatFormat, error) {
 	return hostS.Text(), nil
 }
 
-// Users of host
-func Users() ([]host.UserStat, error) {
+// Sessions of active users on system
+func Sessions() ([]host.UserStat, error) {
 	usr, err := host.Users()
 
 	return usr, errors.Convert(err)
