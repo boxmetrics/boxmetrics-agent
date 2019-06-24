@@ -1,11 +1,12 @@
 package agent
 
 import (
-	"github.com/boxmetrics/boxmetrics-agent/internal/pkg/errors"
-	"github.com/boxmetrics/boxmetrics-agent/internal/pkg/info"
 	"os"
 	"os/exec"
 	"strconv"
+
+	"github.com/boxmetrics/boxmetrics-agent/internal/pkg/errors"
+	"github.com/boxmetrics/boxmetrics-agent/internal/pkg/info"
 )
 
 func dispatchEvent(e event) (interface{}, error) {
@@ -47,6 +48,9 @@ func dispatchInfo(e event) (interface{}, error) {
 	case "users":
 		Log.Debug("users")
 		return info.Users()
+	case "sessions":
+		Log.Debug("sessions")
+		return info.Sessions()
 	case "network":
 		Log.Debug("network")
 		return info.Network(e.Format)

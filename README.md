@@ -107,7 +107,8 @@ Both request and response are JSON message
 | containers   | [Schema](docs/schema/container.md#container)   | Return containers full information                            |
 | containersid | Array of string                                | Return containers ID list                                     |
 | host         | [Schema](docs/schema/host.md#host)             | Return host information                                       |
-| users        | [Schema](docs/schema/host.md#users)            | Return users list                                             |
+| users        | [Schema](docs/schema/host.md#user)             | Return users list                                             |
+| sessions     | [Schema](docs/schema/host.md#session)          | Return user sessions list                                     |
 | network      | [Schema](docs/schema/network.md#network)       | Return network information                                    |
 | connections  | [Schema](docs/schema/network.md#connection)    | Return opened connections list                                |
 | processes    | [Schema](docs/schema/process.md#process-light) | Return processes information list                             |

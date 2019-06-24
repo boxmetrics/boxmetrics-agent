@@ -1,7 +1,13 @@
 package info
 
 import (
+	"bufio"
 	"encoding/json"
+	"io"
+	"os"
+	"os/user"
+	"strings"
+
 	"github.com/boxmetrics/boxmetrics-agent/internal/pkg/errors"
 	"github.com/shirou/gopsutil/host"
 )
@@ -168,9 +174,62 @@ func Host(format bool) (HostStatFormat, error) {
 	return hostS.Text(), nil
 }
 
-// Users of host
-func Users() ([]host.UserStat, error) {
+// Sessions of active users on system
+func Sessions() ([]host.UserStat, error) {
 	usr, err := host.Users()
 
 	return usr, errors.Convert(err)
+}
+
+// Users list all system user
+func Users() ([]*user.User, error) {
+	var users []string
+	file, err := os.Open("/etc/passwd")
+
+	if err != nil {
+		return nil, errors.Convert(err)
+	}
+
+	defer file.Close()
+
+	reader := bufio.NewReader(file)
+
+	for {
+		line, err := reader.ReadString('\n')
+
+		// skip all line starting with #
+		if equal := strings.Index(line, "#"); equal < 0 {
+			// get the username and description
+			lineSlice := strings.FieldsFunc(line, func(divide rune) bool {
+				return divide == ':'
+			})
+
+			if len(lineSlice) > 0 {
+				users = append(users, lineSlice[0])
+			}
+
+		}
+
+		if err == io.EOF {
+			break
+		}
+		if err != nil {
+			return nil, errors.Convert(err)
+		}
+
+	}
+
+	var usersStat []*user.User
+
+	for _, name := range users {
+
+		usr, err := user.Lookup(name)
+		if err != nil {
+			panic(err)
+		}
+
+		usersStat = append(usersStat, usr)
+	}
+
+	return usersStat, nil
 }
