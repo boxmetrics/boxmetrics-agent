@@ -70,7 +70,7 @@ func dispatchInfo(e event) (interface{}, error) {
 func dispatchScript(e event) (interface{}, error) {
 	switch e.Value {
 	case "adduser":
-		cmd := exec.Command("sudo", "scripts/add_user.sh")
+		cmd := exec.Command("./scripts/add_user.sh")
 		cmd.Args = append(cmd.Args, e.Options.Args...)
 
 		r, err := cmd.Output()
