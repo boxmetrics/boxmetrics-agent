@@ -1,0 +1,38 @@
+---
+project_name: boxagent
+before:
+  hooks:
+    - go mod tidy
+builds:
+  - env:
+      - CGO_ENABLED=0
+    binary: bin
+    goos:
+      # - darwin
+      - linux
+      # - windows
+    # hooks:
+    #   pre: go build -v internal/app/server.go
+archives:
+  - replacements:
+      # darwin: Darwin
+      linux: Linux
+      # windows: Windows
+      386: i386
+      amd64: x86_64
+    # format_overrides:
+    #   - goos: windows
+    #     format: zip
+# signs:
+#   - artifacts: checksum
+snapshot:
+  name_template: "{{ .Tag }}-next-SNAPSHOT-{{ .ShortCommit }}"
+release:
+  prerelease: auto
+changelog:
+  sort: asc
+  filters:
+    exclude:
+      - "^docs:"
+      - "^test:"
+# TODO: générer changelog avec github-release-note https://github.com/buchanae/github-release-notes ou un autre generateur de changelog (a voir)
