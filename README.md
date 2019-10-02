@@ -1,3 +1,5 @@
+<a href="https://boxmetrics.github.io/"><img src="https://raw.githubusercontent.com/boxmetrics/boxmetrics-agent/master/.github/boxmetrics-logo.png" width="250" alt="boxmetrics"></a>
+
 # boxmetrics-agent
 
 > This repo contains the boxmetrics agent built with Go
