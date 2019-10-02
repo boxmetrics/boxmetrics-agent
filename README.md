@@ -10,11 +10,13 @@
 
 This project should be working as expected with the following minimal version of:
 
-| Dependency | Version  |
-| ---------- | -------- |
-| Go         | >= v1.12 |
+| Dependency | Version |
+| ---------- | ------- |
+| Go         | >= 1.12 |
 
 ## 🚀 Quick start
+
+> The application must be launch with root or a sudoers, otherwise some features can be unavailable
 
 ### _From docker image :_
 
@@ -63,7 +65,7 @@ make build
 sudo chmod +x bin/boxmetrics-agent
 
 # Start application
-./bin/boxmetrics-agent
+./bin/boxmetrics-agent start
 ```
 
 ## 💡 Usage
@@ -107,7 +109,8 @@ Both request and response are JSON message
 | containers   | [Schema](docs/schema/container.md#container)   | Return containers full information                            |
 | containersid | Array of string                                | Return containers ID list                                     |
 | host         | [Schema](docs/schema/host.md#host)             | Return host information                                       |
-| users        | [Schema](docs/schema/host.md#users)            | Return users list                                             |
+| users        | [Schema](docs/schema/host.md#user)             | Return users list                                             |
+| sessions     | [Schema](docs/schema/host.md#session)          | Return user sessions list                                     |
 | network      | [Schema](docs/schema/network.md#network)       | Return network information                                    |
 | connections  | [Schema](docs/schema/network.md#connection)    | Return opened connections list                                |
 | processes    | [Schema](docs/schema/process.md#process-light) | Return processes information list                             |
@@ -116,16 +119,19 @@ Both request and response are JSON message
 
 ##### Script Type Values
 
-No script available yet
+| Value       | Response | Description                                                                    |
+| ----------- | -------- | ------------------------------------------------------------------------------ |
+| adduser     | string   | Add user to the system _(`options.args` must be set with corresponding value)_ |
+| killprocess | string   | Kill one process _(`options.pid` must be set)_                                 |
 
 ##### Options Object
 
-| Key  | Type   | Require | Default | Description                                                                    |
-| ---- | ------ | ------- | ------- | ------------------------------------------------------------------------------ |
-| args | Array  | no      | null    | Array of arguments to pass to the command                                      |
-| env  | Array  | no      | null    | Array of environment variable to add before executing command _eg. MY_VAR=abc_ |
-| pwd  | string | no      | ""      | Location where the command run, if empty string run in the cwd of the process  |
-| pid  | number | no      | 0       | PID use to retrieve information with `process` info type                       |
+| Key  | Type   | Require | Default | Description                                                                                                                                                                        |
+| ---- | ------ | ------- | ------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| args | Array  | no      | null    | Array of arguments to pass to the command or to pass to `adduser` script _eg. `["-p <pass>", "-u <username>", "-g group1"]` (`-g` arg is optional and can be used multiple times)_ |
+| env  | Array  | no      | null    | Array of environment variable to add before executing command _eg. MY_VAR=abc_                                                                                                     |
+| pwd  | string | no      | ""      | Location where the command run, if empty string run in the cwd of the process                                                                                                      |
+| pid  | number | no      | 0       | PID use to retrieve information with `process` info type or to kill on script `killprocess`                                                                                        |
 
 #### Response
 
@@ -160,7 +166,8 @@ No script available yet
 # run test
 make test
 # start application in dev mode
-make run
+make run #  only on first time
+go run main.go
 ```
 
 5. **Open browser to test your change!**
@@ -218,9 +225,9 @@ make run
         <p>DevOps System Integrator</p>
     </td>
           <td align="center" width="33.3333%" valign="top">
-        <img style="border-radius: 50%;"  width="100" height="100" src="https://github.com/Abdessalam98.png?s=100">
+        <img style="border-radius: 50%;"  width="100" height="100" src="https://github.com/abdessalamb98.png?s=100">
         <br>
-        <a href="https://github.com/Abdessalam98">Abdessalam Benharira</a>
+        <a href="https://github.com/abdessalamb98">Abdessalam Benharira</a>
         <p>JavaScript Developer</p>
       </td>
      </tr>

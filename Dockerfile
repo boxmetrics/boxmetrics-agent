@@ -7,4 +7,4 @@ COPY . .
 RUN make test
 RUN make build
 EXPOSE 4455 5544
-CMD ["./bin/boxmetrics-agent"]
+CMD ["./bin/boxmetrics-agent", "start"]

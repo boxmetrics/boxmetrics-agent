@@ -1,9 +1,12 @@
 package agent
 
 import (
+	"context"
 	"encoding/json"
+	"fmt"
 	"net/http"
 	"os"
+	"os/signal"
 	"strconv"
 	"strings"
 	"time"
@@ -73,7 +76,7 @@ type options struct {
 	Args []string `json:"args"`
 	Env  []string `json:"env"`
 	Dir  string   `json:"pwd"`
-	Pid  int32    `json:"pid"`
+	Pid  int      `json:"pid"`
 }
 
 type event struct {
@@ -155,8 +158,122 @@ func newResponse(e event) *response {
 	return &res
 }
 
-func addHandler() {
-	http.HandleFunc("/ws/v1", func(w http.ResponseWriter, r *http.Request) {
+// CreateServer create websocket server
+func CreateServer() {
+
+	Log.Info("server is starting...")
+	router := http.NewServeMux()
+	router.Handle("/", index())
+	router.Handle("/ws/v1", socket())
+
+	var httpErr error
+	protocol := Config.GetString("protocol")
+	host := Config.GetString("host")
+	port := Config.GetInt(strings.Join([]string{protocol, "_port"}, ""))
+	addr := strings.Join([]string{":", strconv.Itoa(port)}, "")
+	url := strings.Join([]string{protocol, "://", host, addr}, "")
+
+	nextRequestID := func() string {
+		return fmt.Sprintf("%d", time.Now().UnixNano())
+	}
+
+	server := &http.Server{
+		Addr:         addr,
+		Handler:      tracing(nextRequestID)(logging()(router)),
+		ReadTimeout:  5 * time.Second,
+		WriteTimeout: 10 * time.Second,
+		IdleTimeout:  15 * time.Second,
+	}
+
+	logfields := logrus.Fields{"host": host, "port": port, "url": url}
+	Log.WithFields(logfields).Info("server started")
+
+	done := make(chan bool)
+	quit := make(chan os.Signal, 1)
+	signal.Notify(quit, os.Interrupt)
+	signal.Notify(quit, os.Kill)
+
+	go func() {
+		<-quit
+		Log.Info("Server is shutting down...")
+
+		ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
+		defer cancel()
+
+		server.SetKeepAlivesEnabled(false)
+		if err := server.Shutdown(ctx); err != nil {
+			Log.WithField("error", err).Fatal("Could not gracefully shutdown the server")
+		}
+		close(done)
+	}()
+
+	if protocol == "https" {
+		crt := Config.GetString("ssl_crt")
+		key := Config.GetString("ssl_key")
+		if _, err := os.Stat(crt); err != nil {
+			Log.WithField("error", err).Fatal("could not find certificate file")
+		}
+		if _, err := os.Stat(key); err != nil {
+			Log.WithField("error", err).Fatal("could not find key file")
+		}
+		httpErr = server.ListenAndServeTLS(crt, key)
+
+	} else {
+		httpErr = server.ListenAndServe()
+	}
+
+	if httpErr != nil {
+		Log.WithField("error", httpErr).Error("listener fatal error")
+	}
+
+	<-done
+	Log.Info("Server stopped")
+}
+
+func logging() func(http.Handler) http.Handler {
+	return func(next http.Handler) http.Handler {
+		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			defer func() {
+				requestID, ok := r.Context().Value(requestIDKey).(string)
+				if !ok {
+					requestID = "unknown"
+				}
+				Log.Info(requestID, r.Method, r.URL.Path, r.RemoteAddr, r.UserAgent())
+			}()
+			next.ServeHTTP(w, r)
+		})
+	}
+}
+
+type key int
+
+const (
+	requestIDKey key = 0
+)
+
+func tracing(nextRequestID func() string) func(http.Handler) http.Handler {
+	return func(next http.Handler) http.Handler {
+		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			requestID := r.Header.Get("X-Request-Id")
+			if requestID == "" {
+				requestID = nextRequestID()
+			}
+			ctx := context.WithValue(r.Context(), requestIDKey, requestID)
+			w.Header().Set("X-Request-Id", requestID)
+			next.ServeHTTP(w, r.WithContext(ctx))
+		})
+	}
+}
+
+func index() http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		http.ServeFile(w, r, "web/websocket.html")
+	})
+}
+
+func socket() http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		upgrader.CheckOrigin = func(r *http.Request) bool { return true }
 		conn, err := upgrader.Upgrade(w, r, nil) // error ignored for sake of simplicity
 
 		if err != nil {
@@ -208,43 +325,4 @@ func addHandler() {
 			}
 		}
 	})
-
-	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		http.ServeFile(w, r, "web/websocket.html")
-	})
-}
-
-// CreateServer create websocket server
-func CreateServer() {
-
-	addHandler()
-
-	var httpErr error
-	protocol := Config.GetString("protocol")
-	host := Config.GetString("host")
-	port := Config.GetInt(strings.Join([]string{protocol, "_port"}, ""))
-	addr := strings.Join([]string{":", strconv.Itoa(port)}, "")
-	url := strings.Join([]string{protocol, "://", host, addr}, "")
-
-	logfields := logrus.Fields{"host": host, "port": port, "url": url}
-	Log.WithFields(logfields).Info("server started")
-
-	if protocol == "https" {
-		crt := Config.GetString("ssl_crt")
-		key := Config.GetString("ssl_key")
-		if _, err := os.Stat(crt); err != nil {
-			Log.WithField("error", err).Fatal("could not find certificate file")
-		}
-		if _, err := os.Stat(key); err != nil {
-			Log.WithField("error", err).Fatal("could not find key file")
-		}
-		httpErr = http.ListenAndServeTLS(addr, crt, key, nil)
-
-	} else {
-		httpErr = http.ListenAndServe(addr, nil)
-	}
-
-	if httpErr != nil {
-		Log.WithField("error", httpErr).Fatal("listener fatal error")
-	}
 }

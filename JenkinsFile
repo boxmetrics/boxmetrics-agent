@@ -26,11 +26,11 @@ pipeline {
       when { anyOf { branch 'master'; branch 'develop'; branch 'ci-cd' } }
       steps {
         echo 'Build and push'
-        withCredentials([string(credentialsId: 'SERVER', variable: 'SERVER')]) {
-          withDockerRegistry(credentialsId: 'ecr:us-west-2:aws-cred', url: 'https://${SERVER}') {
+        withCredentials([string(credentialsId: 'REGISTRY', variable: 'REGISTRY')]) {
+          withDockerRegistry(credentialsId: 'ecr:us-west-2:aws-cred', url: 'https://${REGISTRY}') {
           
-            sh "docker tag boxmetrics-agent ${SERVER}:${env.BRANCH_NAME}-build-${env.BUILD_NUMBER}"
-            sh "docker push ${SERVER}:${env.BRANCH_NAME}-build-${env.BUILD_NUMBER}"
+            sh "docker tag boxmetrics-agent ${REGISTRY}/boxmetrics-agent:${env.BRANCH_NAME}-build-${env.BUILD_NUMBER}"
+            sh "docker push ${REGISTRY}/boxmetrics-agent:${env.BRANCH_NAME}-build-${env.BUILD_NUMBER}"
           }
         }
       }
