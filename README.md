@@ -184,26 +184,20 @@ go run main.go
 
 ```text
 .
-├── assets          # Project assets (images, logos, etc)
-├── bin             # Project binaries
 ├── certificates    # Project Certificates
-├── cmd             # Main applications for this project
 ├── configs         # Configuration file templates or default configs
 ├── docs            # Design and user documents
 ├── init            # System init and process manager/supervisor configs
 ├── internal
-│   ├── app         # Private application
 │   └── pkg         # Private library code
 ├── scripts         # Scripts to perform various build, install, analysis, etc operations
 ├── test            # Additional external test apps and test data
-├── web             # Web application specific components
 ├── Dockerfile      # Docker image
 ├── go.mod          # Module dependencies
 ├── go.sum          # Ensure dependencies integrity
-├── JenkinsFile     # Jenkins pipeline
+├── LICENSE
 ├── main.go         # Application entry point
 ├── Makefile        # Helpers command
-├── LICENSE
 └── README.md
 ```
 
