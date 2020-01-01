@@ -1,9 +1,10 @@
 package main
 
 import (
-	"github.com/boxmetrics/boxmetrics-agent/cmd"
+	"fmt"
 )
 
 func main() {
 	// TODO
+	fmt.Printf("Do nothing for now")
 }
