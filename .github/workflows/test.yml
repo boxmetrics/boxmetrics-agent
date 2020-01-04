@@ -57,11 +57,13 @@ jobs:
         with:
           name: changelog
           path: ./CHANGELOG-RELEASE.md
+      - name: Show changelog
+        run: cat CHANGELOG-RELEASE.md
       - name: Run GoReleaser
         uses: goreleaser/goreleaser-action@v1
         with:
           version: latest
-          args: release --rm-dist --release-note=CHANGELOG-RELEASE.md
+          args: release --rm-dist --release-notes=CHANGELOG-RELEASE.md
           # key: ${{ secrets.YOUR_PRIVATE_KEY }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
