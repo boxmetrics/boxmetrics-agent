@@ -1,0 +1,54 @@
+name: Github Release
+on:
+  push:
+    tags:
+      - "*"
+jobs:
+  release:
+    name: Release binaries with goreleaser
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v1
+
+      - name: Set up Go
+        uses: actions/setup-go@v1
+        with:
+          go-version: 1.13
+
+      - name: Get current tag
+        id: currentTag
+        uses: olegtarasov/get-tag@v1
+
+      - name: Get previous tag
+        id: previousTag
+        uses: "WyriHaximus/github-action-get-previous-tag@master"
+        env:
+          GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
+        continue-on-error: true
+
+      - name: Set specific configuration
+        run: |
+          echo -e '\nunreleased=false\n' >> .github_changelog_generator
+          cat .github_changelog_generator
+
+      - name: Generate release changelog
+        uses: charmixer/auto-changelog-action@master
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          output: CHANGELOG-RELEASE.md
+          release_branch: develop
+          since_tag: ${{ steps.previousTag.outputs.tag }}
+          due_tag: ${{ steps.currentTag.outputs.tag }}
+
+      - name: Display changelog
+        run: cat CHANGELOG-RELEASE.md
+
+      - name: Run GoReleaser
+        uses: goreleaser/goreleaser-action@v1
+        with:
+          version: latest
+          args: release --rm-dist --release-notes=CHANGELOG-RELEASE.md
+          # key: ${{ secrets.YOUR_PRIVATE_KEY }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
