@@ -4,7 +4,7 @@ on: [push]
 
 jobs:
   build:
-
+    name: Build
     runs-on: ubuntu-latest
 
     steps:
@@ -23,3 +23,18 @@ jobs:
         echo ${{ env.GITHUB_HEAD_REF_SLUG }}
         echo ${{ env.GITHUB_BASE_REF_SLUG }}
         echo ${{ env.GITHUB_SHA_SHORT }}
+  changelog:
+    name: Generate Changelog
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v1
+
+      - name: Generate changelog
+        uses: charmixer/auto-changelog-action@master
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - uses: actions/upload-artifact@v1
+        with:
+          name: changelog
+          path: ./CHANGELOG.md
