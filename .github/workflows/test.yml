@@ -23,27 +23,9 @@ jobs:
         echo ${{ env.GITHUB_HEAD_REF_SLUG }}
         echo ${{ env.GITHUB_BASE_REF_SLUG }}
         echo ${{ env.GITHUB_SHA_SHORT }}
-  changelog:
-    name: Generate Changelog
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v1
-
-      - name: Generate changelog
-        uses: charmixer/auto-changelog-action@master
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-
-      - uses: actions/upload-artifact@v1
-        with:
-          name: changelog
-          path: ./CHANGELOG.md
-          
-          
   release:
     name: Release binaries with goreleaser
     runs-on: ubuntu-latest
-    needs: changelog
     steps:
       - name: Checkout
         uses: actions/checkout@v1
@@ -52,13 +34,24 @@ jobs:
         uses: actions/setup-go@v1
         with:
           go-version: 1.13
+      
+      - name: GitHub Slug
+        uses: rlespinasse/github-slug-action@1.1.0
 
-      - uses: actions/download-artifact@v1
+      - name: 'Get Previous tag'
+        id: previoustag
+        uses: "WyriHaximus/github-action-get-previous-tag@master"
+        env:
+          GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
+
+      - name: Generate release changelog
+        uses: charmixer/auto-changelog-action@master
         with:
-          name: changelog
-          path: ./CHANGELOG-RELEASE.md
-      - name: Show changelog
-        run: cat CHANGELOG-RELEASE.md
+          token: ${{ secrets.GITHUB_TOKEN }}
+          output: CHANGELOG-RELEASE.md
+          since_tag: ${{ steps.previoustag.outputs.tag }}
+          due_tag: ${{ env.GITHUB_REF_SLUG }}
+          
       - name: Run GoReleaser
         uses: goreleaser/goreleaser-action@v1
         with:
