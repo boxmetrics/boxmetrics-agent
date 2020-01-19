@@ -108,7 +108,6 @@ jobs:
         with:
           version: latest
           args: release --rm-dist --snapshot
-          # key: ${{ secrets.YOUR_PRIVATE_KEY }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
