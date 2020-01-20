@@ -1,0 +1,118 @@
+name: Continuous Integration
+on:
+  push:
+    tags-ignore:
+jobs:
+  check:
+    name: Check Source Code
+    runs-on: ubuntu-latest
+    steps:
+      - name: Set up Go 1.13
+        uses: actions/setup-go@v1
+        with:
+          go-version: 1.13
+        id: go
+
+      - name: Clone Repository
+        uses: actions/checkout@v1
+
+      - name: Create Output Directory
+        run: mkdir out
+
+      - name: Restore Cache
+        uses: actions/cache@v1
+        with:
+          path: ~/go/pkg/mod
+          key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
+          restore-keys: |
+            ${{ runner.os }}-go-
+
+      - name: Get dependencies
+        run: go get -v -d ./...
+
+      - name: Check Format
+        run: gofmt -l .
+
+      - name: Check Syntax
+        run: go vet -json ./... > out/govet-report.out
+
+      - name: Test & Coverage
+        run: go test -v -coverprofile=out/coverage.out -json ./... > out/test-report.out
+
+      - name: Archive checks results
+        uses: actions/upload-artifact@v1.0.0
+        with:
+          name: checks_${{ github.sha }}
+          path: out
+
+  sonarcloud:
+    name: SonarCloud Analysis
+    runs-on: ubuntu-latest
+    needs: check
+    steps:
+      - name: Clone Repository
+        uses: actions/checkout@v1
+
+      - name: Download checks results
+        uses: actions/download-artifact@v1.0.0
+        with:
+          name: checks_${{ github.sha }}
+          path: out
+
+      - name: Analyze with SonarCloud
+        uses: SonarSource/sonarcloud-github-action@v1.1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+
+  build:
+    name: Build Binary
+    runs-on: ubuntu-latest
+    needs: check
+    steps:
+      - name: Clone Repository
+        uses: actions/checkout@v1
+
+      - name: Restore Cache
+        uses: actions/cache@v1
+        with:
+          path: ~/go/pkg/mod
+          key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
+          restore-keys: |
+            ${{ runner.os }}-go-
+
+      - name: Get dependencies
+        run: go get -v -d ./...
+
+      - name: Build
+        run: make build
+
+      - name: Run
+        run: ./bin/boxmetrics-agent
+
+  release:
+    name: Release SNAPSHOT binaries
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v1
+
+      - name: Set up Go
+        uses: actions/setup-go@v1
+        with:
+          go-version: 1.13
+
+      - name: Build SNAPSHOT binaries with GoReleaser
+        uses: goreleaser/goreleaser-action@v1
+        with:
+          version: latest
+          args: release --rm-dist --snapshot
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Archive SNAPSHOT binaries
+        uses: actions/upload-artifact@v1.0.0
+        with:
+          name: SNAPSHOT_${{ github.sha }}
+          path: dist

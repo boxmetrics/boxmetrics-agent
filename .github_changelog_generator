@@ -1,0 +1,10 @@
+issues=false
+add-sections={"dependencies":{"prefix":"### :factory: **Updated dependencies:**","labels":["dependencies", "Dependencies"]},"documentation":{"prefix":"### :scroll: **Documentation:**","labels":["docs", "documentation", "Documentation"]}}
+breaking_prefix=### :boom: **Breaking changes:**
+enhancement_prefix=### :zap: **Implemented enhancements:**
+bug_prefix=### :bug: **Fixed bugs:**
+deprecated_prefix=### :old_key: **Deprecated:**
+removed_prefix=### :fire: **Removed:**
+security_prefix=### :lock: **Security:**
+issue_prefix=### :books: **Closed issues**
+merge_prefix=### :sparkles: **Merged pull requests:**

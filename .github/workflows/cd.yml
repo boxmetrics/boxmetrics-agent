@@ -1,0 +1,80 @@
+# Un problème est le manque de priorité entre les
+# workflows, il n'est actuellement pas possible de donner
+# un ordre d'exécution, l'idéal serait d'exécuter CI avant CD
+name: Continuous Deployment
+on:
+  push:
+    branches:
+      - master
+      - develop
+    tags:
+      - "*"
+jobs:
+  build:
+    name: Build Binary
+    runs-on: ubuntu-latest
+    env:
+      BINARY_NAME: boxmetrics-agent
+    steps:
+      - name: Clone Repository
+        uses: actions/checkout@v1
+
+      - name: Restore Cache
+        uses: actions/cache@v1
+        with:
+          path: ~/go/pkg/mod
+          key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
+          restore-keys: |
+            ${{ runner.os }}-go-
+
+      - name: Get dependencies
+        run: go get -v -d ./...
+
+      - name: Build
+        run: make build
+
+      - name: Run
+        run: ./bin/${{ env.BINARY_NAME }}
+
+      - name: Archive binary
+        uses: actions/upload-artifact@v1.0.0
+        with:
+          name: ${{ env.BINARY_NAME }}_${{ github.sha }}
+          path: bin
+
+  publish:
+    name: Publish Docker Image
+    runs-on: ubuntu-latest
+    needs: build
+    env:
+      IMAGE_NAME: boxmetrics-agent
+    steps:
+      - name: Download binary
+        uses: actions/download-artifact@v1.0.0
+        with:
+          name: ${{ env.BINARY_NAME }}_${{ github.sha }}
+          path: bin
+
+      - name: Build the Docker image
+        run: docker build . --file Dockerfile --tag image
+
+      - name: Log into registry
+        run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login docker.pkg.github.com -u ${{ github.actor }} --password-stdin
+
+      - name: Push image
+        run: |
+          IMAGE_ID=docker.pkg.github.com/${{ github.repository }}/$IMAGE_NAME
+          # Strip git ref prefix from version
+          VERSION=$(echo "${{ github.ref }}" | sed -e 's,.*/\(.*\),\1,')
+          # Strip "v" prefix from tag name
+          [[ "${{ github.ref }}" == "refs/tags/"* ]] && VERSION=$(echo $VERSION | sed -e 's/^v//')
+          # Use Docker `latest` tag convention
+          [ "$VERSION" == "master" ] && VERSION=latest
+
+          [ "$VERSION" == "develop" ] && VERSION=next
+
+          echo IMAGE_ID=$IMAGE_ID
+          echo VERSION=$VERSION
+
+          docker tag image $IMAGE_ID:$VERSION
+          docker push $IMAGE_ID:$VERSION

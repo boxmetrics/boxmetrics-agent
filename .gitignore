@@ -27,3 +27,6 @@ bin/
 
 # Log file
 .log
+
+# Release folder
+dist/
