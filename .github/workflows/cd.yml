@@ -9,12 +9,12 @@ on:
       - develop
     tags:
       - "*"
+env:
+  BINARY_NAME: boxmetrics-agent
 jobs:
   build:
     name: Build Binary
     runs-on: ubuntu-latest
-    env:
-      BINARY_NAME: boxmetrics-agent
     steps:
       - name: Clone Repository
         uses: actions/checkout@v1
