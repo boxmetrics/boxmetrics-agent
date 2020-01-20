@@ -49,6 +49,9 @@ jobs:
     env:
       IMAGE_NAME: boxmetrics-agent
     steps:
+      - name: Clone Repository
+        uses: actions/checkout@v1
+        
       - name: Download binary
         uses: actions/download-artifact@v1.0.0
         with:
