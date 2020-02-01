@@ -203,8 +203,6 @@ go run main.go
 
 ## 👷 Maintained by
 
-> Project initially launched by Laurent Panek, Maxence Colmant and Abdessalam Benharira
-
 <table width="100%">
   <tbody width="100%">
     <tr width="100%">
